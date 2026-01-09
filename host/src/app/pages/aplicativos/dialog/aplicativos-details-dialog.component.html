@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Detalhes do Aplicativo</h2>
+
+<mat-dialog-content>
+  <form class="form-grid">
+
+    <mat-form-field appearance="outline">
+      <mat-label>ID</mat-label>
+      <input matInput [value]="data.id" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput [value]="data.nome" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descrição</mat-label>
+      <input matInput [value]="data.descricao" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>URL</mat-label>
+      <input matInput [value]="data.url" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Module Name</mat-label>
+      <input matInput [value]="data.moduleName" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Exposed Module</mat-label>
+      <input matInput [value]="data.exposedModule" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Route Path</mat-label>
+      <input matInput [value]="data.routePath" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ativo</mat-label>
+      <input matInput [value]="data.ativo === 'S' ? 'Sim' : 'Não'" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Criado em</mat-label>
+      <input matInput [value]="data.criadoEm | date:'dd/MM/yyyy HH:mm'" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Atualizado em</mat-label>
+      <input matInput [value]="data.atualizadoEm ? (data.atualizadoEm | date:'dd/MM/yyyy HH:mm') : '-'" readonly>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-raised-button color="primary" class="botao-ok" (click)="close()">
+    <mat-icon>close</mat-icon>
+    Fechar
+  </button>
+</mat-dialog-actions>

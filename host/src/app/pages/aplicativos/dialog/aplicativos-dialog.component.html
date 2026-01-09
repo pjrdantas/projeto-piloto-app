@@ -1,0 +1,77 @@
+<h2 mat-dialog-title>
+  {{ isEdit ? 'Editar Aplicativo' : 'Novo Aplicativo' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-grid">
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="nome">
+      <mat-error *ngIf="form.controls['nome'].hasError('required')">
+        Nome é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao">
+      <mat-error *ngIf="form.controls['descricao'].hasError('required')">
+        Descrição é obrigatória
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>URL</mat-label>
+      <input matInput formControlName="url" placeholder="http://localhost:4200/remoteEntry.js">
+      <mat-error *ngIf="form.controls['url'].hasError('required')">
+        URL é obrigatória
+      </mat-error>
+      <mat-error *ngIf="form.controls['url'].hasError('invalidUrl')">
+        URL inválida
+      </mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Module Name</mat-label>
+      <input matInput formControlName="moduleName">
+      <mat-error *ngIf="form.controls['moduleName'].hasError('required')">
+        Module Name é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Exposed Module</mat-label>
+      <input matInput formControlName="exposedModule">
+      <mat-error *ngIf="form.controls['exposedModule'].hasError('required')">
+        Exposed Module é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Route Path</mat-label>
+      <input matInput formControlName="routePath">
+      <mat-error *ngIf="form.controls['routePath'].hasError('required')">
+        Route Path é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-slide-toggle formControlName="ativo" color="primary">
+      Ativo
+    </mat-slide-toggle>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-raised-button type="button" (click)="close()" class="botao-cancel">
+    <mat-icon>cancel</mat-icon>
+    Cancelar
+  </button>
+
+  <button mat-raised-button (click)="save()" [disabled]="form.invalid" class="botao-ok">
+    <mat-icon>check_circle</mat-icon>
+    Salvar
+  </button>
+</mat-dialog-actions>

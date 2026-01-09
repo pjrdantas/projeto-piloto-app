@@ -1,0 +1,81 @@
+.card {
+  padding: 20px;
+  margin: 20px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex !important;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+}
+.page-card {
+  padding: 16px;
+}
+
+.header-bar {
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.btn-novo {
+  width: 160px !important;
+  background-color: #667eea !important;
+  color: white !important;
+}
+
+:host {
+  display: block;
+  min-height: 100vh; // garante que ocupe toda a altura da tela
+  padding: 16px; // opcional, para afastar o card das bordas
+
+  background: linear-gradient(135deg, #cbd5eb 0%, #e5eaec 100%);
+}
+
+// Usando ::ng-deep para garantir que os estilos sejam aplicados
+// às linhas da tabela do Angular Material.
+::ng-deep .mat-mdc-row:nth-child(even) {
+  background-color: #f0f2f5; /* Cor para linhas pares */
+}
+
+::ng-deep .mat-mdc-row:nth-child(odd) {
+  background-color: #ffffff; /* Cor para linhas ímpares */
+}
+
+::ng-deep .mat-mdc-row:hover {
+  background-color: #e0e0e0; /* Cor de destaque ao passar o mouse */
+}
+
+// Estilo para o cabeçalho da tabela
+::ng-deep .mat-mdc-header-cell {
+  background-color: #667eea !important;
+  color: white;
+}
+
+// Estilo para o snackbar de erro
+::ng-deep .error-snackbar {
+  --mdc-snackbar-container-color: #f44336 !important; // Fundo vermelho
+  --mat-mdc-snack-bar-button-color: white !important; // Cor do botão
+  --mdc-snackbar-supporting-text-color: white !important; // Cor do texto
+}
+
+/* Reduz a altura das linhas da tabela */
+::ng-deep .mat-mdc-row, ::ng-deep .mat-mdc-header-row {
+  height: 36px !important;
+}
+
+/* Reduz o padding das células */
+::ng-deep .mat-mdc-cell, ::ng-deep .mat-mdc-header-cell {
+  padding: 0 8px !important;
+}

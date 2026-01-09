@@ -1,0 +1,76 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <div class="loading-overlay" *ngIf="loading">
+      <mat-progress-spinner mode="indeterminate" diameter="40" strokeWidth="4">
+      </mat-progress-spinner>
+    </div>
+
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form id="loginFormId" [formGroup]="loginForm" (ngSubmit)="fazerLogin()">
+        <!-- LOGIN -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Usuário</mat-label>
+
+          <input matInput formControlName="login" type="text" required />
+
+          <mat-error *ngIf="loginForm.get('login')?.hasError('required')">
+            Usuário é obrigatório
+          </mat-error>
+
+          <mat-error *ngIf="loginForm.get('login')?.hasError('minlength')">
+            Mínimo de 6 caracteres
+          </mat-error>
+        </mat-form-field>
+
+        <!-- SENHA -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Senha</mat-label>
+
+          <input
+            matInput
+            formControlName="senha"
+            [type]="hide ? 'password' : 'text'"
+            required
+            autocomplete="current-password"
+          />
+
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hide = !hide"
+            aria-label="Mostrar senha"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+
+          <mat-error *ngIf="loginForm.get('senha')?.hasError('required')">
+            Senha é obrigatória
+          </mat-error>
+
+          <mat-error *ngIf="loginForm.get('senha')?.hasError('minlength')">
+            Mínimo de 6 caracteres
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        class="botao-ok"
+        type="submit"
+        form="loginFormId"
+        [disabled]="loginForm.invalid || loading"
+      >
+        <i class="fa fa-lock"></i>
+        Autenticar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
