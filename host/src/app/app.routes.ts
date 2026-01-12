@@ -32,6 +32,24 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' }, // redireciona para /app/home
       { path: 'home', component: HomeComponent },         // página inicial limpa
 
+       {
+        path: 'perfis',
+        loadComponent: () =>
+          import('./pages/perfis/perfis')
+            .then(m => m.Perfis),
+      },
+       {
+        path: 'permissoes',
+        loadComponent: () =>
+          import('./pages/permissoes/permissoes')
+            .then(m => m.Permissoes),
+      },
+       {
+        path: 'usuarios',
+        loadComponent: () =>
+          import('./pages/usuarios/usuarios')
+            .then(m => m.Usuarios),
+      },
       {
         path: 'aplicativos',
         loadComponent: () =>

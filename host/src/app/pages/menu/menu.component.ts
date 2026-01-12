@@ -65,10 +65,12 @@ export class MenuComponent implements OnInit, OnDestroy {
       agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   }
 
-  irUsuarios() { this.router.navigate(['/usuarios']); }
-  irHome() { this.router.navigate(['/app/home']); }
+  irUsuarios() { this.router.navigate(['/app/usuarios']); }
+  irPerfis() { this.router.navigate(['/app/perfis']); }
+  irPermissoes() { this.router.navigate(['/app/permissoes']); }
   irAplicativos() { this.router.navigate(['/app/aplicativos']); }
-  abrirMicrofrontend() { this.router.navigate(['/app/microfrontend']); }
 
+  abrirMicrofrontend() { this.router.navigate(['/app/microfrontend']); }
+  irHome() { this.router.navigate(['/app/home']); }
   sair() { this.authState.clear(); this.router.navigate(['/login']); }
 }

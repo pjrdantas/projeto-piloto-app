@@ -1,14 +1,18 @@
-.page-container {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f5f6f8;
-}
+
+  .page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+
 
 .federated-card {
   width: 420px;
-  padding: 32px;
+  padding: 20px;
+  border: 3px
+  solid #f80909;
   text-align: center;
   border-radius: 16px;
 
@@ -27,3 +31,4 @@
   font-weight: 500;
   color: #1f2937;
 }
+
