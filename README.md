@@ -1,14 +1,19 @@
 # Projeto Piloto - Microfrontend Angular
 
-## Estrutura
+## Estrutura modular do projeto
 - /host → aplicação shell
 - /microfrontend → aplicação remota
 
 ## Subir os projetos
-1. cd microfrontend
+1. microfrontend
+````bash
+   cd /microfrontend
    npm install
    ng serve
-
-2. cd host
+````
+2.  host
+````bash
+   cd /host
    npm install
    ng serve
+````
