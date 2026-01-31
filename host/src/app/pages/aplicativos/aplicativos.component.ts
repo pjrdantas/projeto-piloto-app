@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,14 +12,18 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AplicativosService } from '../../services/aplicativos.service';
 import { AplicativosResponse } from '../../models/aplicativos-response.model';
-import { AplicativosDialogComponent } from './dialog/aplicativos-dialog.component';
+import { AplicativosDialogComponent } from './dialog/edit-insert/aplicativos-dialog-edit';
 import { ConfirmationDialogComponent } from '../../shared/dialog-confirmacao/confirmation-dialog.component';
 import { ConfirmationDialogData } from '../../models/confirmation-dialog.model';
-import { MatDivider } from "@angular/material/divider";
-import { AplicativosDetailsDialogComponent } from './dialog/aplicativos-details-dialog.component';
+import { AplicativosDetailsDialogComponent } from './dialog/read/aplicativos-dialog-read';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { AuthService } from '../../core/auth/auth.service'; // Ajuste o caminho se necessário
+import { of } from 'rxjs';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-aplicativos',
@@ -35,66 +39,76 @@ import { AplicativosDetailsDialogComponent } from './dialog/aplicativos-details-
     MatSortModule,
     MatPaginatorModule,
     MatSnackBarModule,
-    MatDivider
-],
+    MatTooltipModule,
+    HasPermissionDirective,
+    MatDividerModule
+  ],
   templateUrl: './aplicativos.component.html',
   styleUrls: ['./aplicativos.component.scss']
 })
-export class AplicativosComponent implements OnInit, AfterViewInit, OnDestroy {
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  displayedColumns = [
-    'id', 'nome', 'descricao', 'url',  'ativo', 'criadoEm', 'atualizadoEm', 'actions'
-  ];
-
-
+export class AplicativosComponent implements OnInit {
+  private service = inject(AplicativosService);
+  private authService = inject(AuthService);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private cdr = inject(ChangeDetectorRef);
+hasAnyReadPermission = true;
   dataSource = new MatTableDataSource<AplicativosResponse>([]);
+  displayedColumns = ['id', 'nome', 'descricao', 'url', 'ativo', 'criadoEm', 'atualizadoEm', 'actions'];
+
+  // ✅ Uso de Setters para garantir o vínculo com componentes que podem estar dentro de um @if
+  @ViewChild(MatSort) set matSort(sort: MatSort) {
+    if (sort) {
+      this.dataSource.sort = sort;
+      if (!this.dataSource.sort.active) {
+        this.setDefaultSort(sort);
+      }
+    }
+  }
+
+  @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
+    if (paginator) {
+      this.dataSource.paginator = paginator;
+    }
+  }
 
   aplicativos$!: Observable<AplicativosResponse[]>;
-
   private refresh$ = new BehaviorSubject<void>(undefined);
-
-  private subscription!: Subscription;
-
-  constructor(
-    private service: AplicativosService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) { }
 
   ngOnInit(): void {
     this.aplicativos$ = this.refresh$.pipe(
+      switchMap(() => {
+        const hasReadAll = !!this.authService.hasPermission('READ_ALL');
+        const hasReadActive = !!this.authService.hasPermission('READ_ACTIVE');
 
-      switchMap(() => this.service.listAll()),
-      map(data => data.map(d => ({ ...d, ativoBoolean: d.ativo === 'S' }))),
+        // ATUALIZA A VARIÁVEL DE CONTROLE:
+        this.hasAnyReadPermission = hasReadAll || hasReadActive;
 
+        if (hasReadAll) {
+          return this.service.listAll();
+        }
+
+        if (hasReadActive) {
+          return this.service.listActive();
+        }
+
+        return of([]);
+      }),
       tap(data => {
         this.dataSource.data = data;
-
-        this.dataSource.paginator = this.paginator;
+        this.cdr.detectChanges();
       })
     );
-
-    this.subscription = this.aplicativos$.subscribe();
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.setDefaultSort();
-  }
 
-  private setDefaultSort() {
+  private setDefaultSort(sort: MatSort) {
     setTimeout(() => {
-      this.sort.active = 'id';
-      this.sort.direction = 'asc';
-      this.sort.sortChange.emit();
+      sort.active = 'id';
+      sort.direction = 'asc';
+      sort.sortChange.emit();
+      this.cdr.detectChanges();
     });
   }
 
@@ -102,7 +116,8 @@ export class AplicativosComponent implements OnInit, AfterViewInit, OnDestroy {
     this.refresh$.next();
   }
 
-  openDialogCreate(): void {const dialogRef = this.dialog.open(AplicativosDialogComponent, {
+  openDialogCreate(): void {
+    const dialogRef = this.dialog.open(AplicativosDialogComponent, {
       width: '600px',
       height: '430px',
       maxWidth: '90vw',
@@ -116,29 +131,34 @@ export class AplicativosComponent implements OnInit, AfterViewInit, OnDestroy {
             this.loadAll();
             this.snackBar.open('Microfrontend criado com sucesso!', 'Fechar', { duration: 5000 });
           },
-          error: err => this.snackBar.open('Erro ao criar microfrontend.', 'Fechar', { duration: 8000, panelClass: 'error-snackbar' })
+          error: () => this.snackBar.open('Erro ao criar microfrontend.', 'Fechar', { duration: 8000, panelClass: 'error-snackbar' })
         });
       }
     });
   }
 
-openDialogEdit(m: AplicativosResponse): void {
+ openDialogEdit(m: AplicativosResponse): void {
   const dialogRef = this.dialog.open(AplicativosDialogComponent, {
     width: '600px',
     height: '430px',
     maxWidth: '90vw',
-    data: m,
+    data: { ...m },
     disableClose: true
   });
 
   dialogRef.afterClosed().subscribe(result => {
-    if (result && m.id) {
-      this.service.update(m.id, result).subscribe({
+
+    if (result && result.id) {
+
+      this.service.update(result.id, result).subscribe({
         next: () => {
           this.loadAll();
-          this.snackBar.open('Microfrontend atualizado com sucesso!', 'Fechar', { duration: 5000 });
+          this.snackBar.open('Atualizado com sucesso!', 'Fechar', { duration: 5000 });
         },
-        error: err => this.snackBar.open('Erro ao atualizar microfrontend.', 'Fechar', { duration: 8000, panelClass: 'error-snackbar' })
+        error: (err) => {
+          console.error('Erro no update:', err);
+          this.snackBar.open('Erro ao atualizar.', 'Fechar', { duration: 8000 });
+        }
       });
     }
   });
@@ -151,9 +171,8 @@ openDialogEdit(m: AplicativosResponse): void {
       confirmButtonText: 'Excluir',
       confirmButtonColor: 'warn'
     };
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: dialogData,
-    });
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: dialogData });
 
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
@@ -162,24 +181,19 @@ openDialogEdit(m: AplicativosResponse): void {
             this.loadAll();
             this.snackBar.open('Microfrontend excluído com sucesso!', 'Fechar', { duration: 5000 });
           },
-          error: err => this.snackBar.open('Erro ao excluir. Verifique permissões (somente ADMIN).', 'Fechar', { duration: 8000, panelClass: 'error-snackbar' })
+          error: () => this.snackBar.open('Erro ao excluir. Verifique permissões.', 'Fechar', { duration: 8000, panelClass: 'error-snackbar' })
         });
       }
     });
   }
 
-openDialogDetails(m: AplicativosResponse): void {
-  this.dialog.open(AplicativosDetailsDialogComponent, {
-    width: '620px',
-    height: '486px',
-    maxWidth: '90vw',
-    data: m,
-    disableClose: true
-  });
-}
-
-
-
-
-
+  openDialogDetails(m: AplicativosResponse): void {
+    this.dialog.open(AplicativosDetailsDialogComponent, {
+      width: '620px',
+      height: '543px',
+      maxWidth: '90vw',
+      data: m,
+      disableClose: true
+    });
+  }
 }

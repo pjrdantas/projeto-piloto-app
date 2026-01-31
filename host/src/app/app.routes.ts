@@ -35,20 +35,20 @@ export const routes: Routes = [
        {
         path: 'perfis',
         loadComponent: () =>
-          import('./pages/perfis/perfis')
-            .then(m => m.Perfis),
+          import('./pages/perfis/perfis.componet')
+            .then(m => m.PerfisComponent),
       },
        {
         path: 'permissoes',
         loadComponent: () =>
-          import('./pages/permissoes/permissoes')
-            .then(m => m.Permissoes),
+          import('./pages/permissoes/permissoes.component')
+            .then(m => m.PermissoesComponent),
       },
        {
         path: 'usuarios',
         loadComponent: () =>
-          import('./pages/usuarios/usuarios')
-            .then(m => m.Usuarios),
+          import('./pages/usuarios/usuarios.component')
+            .then(m => m.UsuariosComponent),
       },
       {
         path: 'aplicativos',

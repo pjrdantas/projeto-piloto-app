@@ -5,6 +5,7 @@ export interface UsuarioAuth {
   usuario: string;
   nome: string;
   perfis: string[];
+  permissoes: string[];
 }
 
 @Injectable({
@@ -41,6 +42,11 @@ export class AuthStateService {
     this.tokenSubject.next(token);
     this.refreshTokenSubject.next(refreshToken);
     this.usuarioSubject.next(usuario);
+  }
+
+    getPermissions(): string[] {
+    const usuario = this.getUsuario();
+    return usuario?.permissoes || [];
   }
 
   // CLEAR

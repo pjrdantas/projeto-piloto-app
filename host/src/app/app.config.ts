@@ -18,15 +18,10 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
 
-    // Configura o HttpClient com suporte a interceptores via DI
     provideHttpClient(withInterceptorsFromDi()),
 
-    // Registra o AuthInterceptor globalmente
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-
-    // 🔥 Erro global (NOVO)
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-
     {
       provide: APP_INITIALIZER,
       useFactory: authInitializer,
@@ -35,3 +30,4 @@ export const appConfig: ApplicationConfig = {
     }
   ]
 };
+

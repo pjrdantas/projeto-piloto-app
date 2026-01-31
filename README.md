@@ -7,17 +7,17 @@
 
 ## Subir os projetos
 
-1. microfrontend
+### 1. microfrontend
 
-````bash
+```text
    cd /microfrontend
    npm install
    ng serve
-`````
+```
 
-1. host
+### 2. host
 
-````bash
+```text
    cd /host
    npm install
    ng serve

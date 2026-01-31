@@ -6,7 +6,7 @@ export interface AplicativosResponse {
   moduleName: string;
   exposedModule: string;
   routePath: string;
-  ativo: 'S' | 'N'; // ✅ string, pois vem do back
+  ativo: 'S' | 'N';
   criadoEm: string;
   atualizadoEm: string | null;
 }

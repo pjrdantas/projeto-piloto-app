@@ -20,25 +20,16 @@ export class AplicativosService {
     this.API = `${this.configService.getUrlService()}/${this.API}`;
   }
 
-  // Helper para converter "S"/"N" em boolean
-  toBoolean(value: 'S' | 'N'): boolean {
-    return value === 'S';
-  }
-
-  // Helper para converter boolean em "S"/"N"
-  toString(value: boolean): 'S' | 'N' {
-    return value ? 'S' : 'N';
-  }
-
   listAll(): Observable<AplicativosResponse[]> {
     this.loading = true;
     return this.http.get<AplicativosResponse[]>(this.API).pipe(
-      map(data =>
-        data.map(m => ({
-          ...m,
-          ativo: m.ativo // mantém como string "S" | "N"
-        }))
-      ),
+      finalize(() => this.loading = false)
+    );
+  }
+
+  listActive(): Observable<AplicativosResponse[]> {
+    this.loading = true;
+    return this.http.get<AplicativosResponse[]>(`${this.API}/ativos`).pipe(
       finalize(() => this.loading = false)
     );
   }
@@ -50,52 +41,18 @@ export class AplicativosService {
     );
   }
 
-  create(payload: {
-    nome: string;
-    descricao?: string;
-    url: string;
-    moduleName: string;
-    exposedModule: string;
-    routePath?: string;
-    ativo?: boolean; // boolean local
-  }): Observable<AplicativosResponse> {
-    const requestPayload: AplicativosRequest = {
-      nome: payload.nome,
-      descricao: payload.descricao || '',
-      url: payload.url,
-      moduleName: payload.moduleName,
-      exposedModule: payload.exposedModule,
-      routePath: payload.routePath || '',
-      ativo: this.toString(payload.ativo ?? true) // converte para "S"/"N"
-    };
-
+  // Removida a conversão manual: o payload já vem do Dialog como AplicativosRequest ('S' | 'N')
+  create(payload: AplicativosRequest): Observable<AplicativosResponse> {
     this.loading = true;
-    return this.http.post<AplicativosResponse>(this.API, requestPayload).pipe(
+    return this.http.post<AplicativosResponse>(this.API, payload).pipe(
       finalize(() => this.loading = false)
     );
   }
 
-  update(id: number, payload: {
-    nome: string;
-    descricao?: string;
-    url: string;
-    moduleName: string;
-    exposedModule: string;
-    routePath?: string;
-    ativo?: boolean;
-  }): Observable<AplicativosResponse> {
-    const requestPayload: AplicativosRequest = {
-      nome: payload.nome,
-      descricao: payload.descricao || '',
-      url: payload.url,
-      moduleName: payload.moduleName,
-      exposedModule: payload.exposedModule,
-      routePath: payload.routePath || '',
-      ativo: this.toString(payload.ativo ?? true) // converte para "S"/"N"
-    };
-
+  // Removida a conversão manual: o payload já vem do Dialog como AplicativosRequest ('S' | 'N')
+  update(id: number, payload: AplicativosRequest): Observable<AplicativosResponse> {
     this.loading = true;
-    return this.http.put<AplicativosResponse>(`${this.API}/${id}`, requestPayload).pipe(
+    return this.http.put<AplicativosResponse>(`${this.API}/${id}`, payload).pipe(
       finalize(() => this.loading = false)
     );
   }

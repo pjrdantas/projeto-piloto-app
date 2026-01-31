@@ -1,0 +1,172 @@
+Listagem de caminhos de pasta
+O n£mero de s‚rie do volume ‚ C0000100 2EC2:27B3
+C:.
+|   .gitignore
+|   estrutura.txt
+|   README.md
+|   
++---.github
+|   \---appmod
+|       \---appcat
++---host
+|   |   .editorconfig
+|   |   .gitignore
+|   |   angular.json
+|   |   federation.config.js
+|   |   package-lock.json
+|   |   package.json
+|   |   README.md
+|   |   tsconfig.app.json
+|   |   tsconfig.json
+|   |   tsconfig.spec.json
+|   |   
+|   \---src
+|       |   bootstrap.ts
+|       |   custom-theme.scss
+|       |   index.html
+|       |   main.ts
+|       |   styles.scss
+|       |   
+|       \---app
+|           |   app.config.ts
+|           |   app.html
+|           |   app.routes.ts
+|           |   app.scss
+|           |   app.spec.ts
+|           |   app.ts
+|           |   
+|           +---core
+|           |   +---auth
+|           |   |       auth-bootstrap.service.ts
+|           |   |       auth-state.service.ts
+|           |   |       auth.service.ts
+|           |   |       session-validator.service.ts
+|           |   |       
+|           |   +---interceptors
+|           |   |       auth.interceptor.ts
+|           |   |       http-error.interceptor.ts
+|           |   |       
+|           |   \---logger
+|           |           logger.service.ts
+|           |           
+|           +---guards
+|           |       auth.guard.ts
+|           |       
+|           +---layouts
+|           |       private-layout.component.html
+|           |       private-layout.component.scss
+|           |       private-layout.component.ts
+|           |       public-layout.component.ts
+|           |       
+|           +---models
+|           |       aplicativos-request.model.ts
+|           |       aplicativos-response.model.ts
+|           |       confirmation-dialog.model.ts
+|           |       error-response.model.ts
+|           |       permissao.model.ts
+|           |       role.model.ts
+|           |       user-request.model.ts
+|           |       usuario.model.ts
+|           |       
+|           +---pages
+|           |   +---aplicativos
+|           |   |   |   aplicativos.component.html
+|           |   |   |   aplicativos.component.scss
+|           |   |   |   aplicativos.component.ts
+|           |   |   |   
+|           |   |   \---dialog
+|           |   |           aplicativos-details-dialog.component.html
+|           |   |           aplicativos-details-dialog.component.scss
+|           |   |           aplicativos-details-dialog.component.ts
+|           |   |           aplicativos-dialog.component.html
+|           |   |           aplicativos-dialog.component.scss
+|           |   |           aplicativos-dialog.component.ts
+|           |   |           
+|           |   +---home
+|           |   |       home.component.html
+|           |   |       home.component.scss
+|           |   |       home.component.ts
+|           |   |       
+|           |   +---login
+|           |   |       login.component.html
+|           |   |       login.component.scss
+|           |   |       login.component.ts
+|           |   |       
+|           |   +---menu
+|           |   |       menu.component.html
+|           |   |       menu.component.scss
+|           |   |       menu.component.ts
+|           |   |       
+|           |   +---perfis
+|           |   |       perfis.html
+|           |   |       perfis.scss
+|           |   |       perfis.ts
+|           |   |       
+|           |   +---permissoes
+|           |   |   |   permissoes.html
+|           |   |   |   permissoes.scss
+|           |   |   |   permissoes.ts
+|           |   |   |   
+|           |   |   \---dialog
+|           |   |           permissao-dialog.html
+|           |   |           permissao-dialog.scss
+|           |   |           permissao-dialog.ts
+|           |   |           
+|           |   \---usuarios
+|           |           usuarios.html
+|           |           usuarios.scss
+|           |           usuarios.ts
+|           |           
+|           +---services
+|           |       aplicativos.service.ts
+|           |       config.service.ts
+|           |       permissao.service.ts
+|           |       role.service.ts
+|           |       usuario.service.ts
+|           |       
+|           +---shared
+|           |   +---dialog-confirmacao
+|           |   |       confirmation-dialog.component.html
+|           |   |       confirmation-dialog.component.ts
+|           |   |       
+|           |   \---directives
+|           |           has-permission.directive.ts
+|           |           
+|           \---validators
+|                   url-validator.ts
+|                   
+\---microfrontend
+    |   .editorconfig
+    |   .gitignore
+    |   angular.json
+    |   federation.config.js
+    |   package-lock.json
+    |   package.json
+    |   README.md
+    |   tsconfig.app.json
+    |   tsconfig.json
+    |   tsconfig.spec.json
+    |   
+    \---src
+        |   bootstrap.ts
+        |   index.html
+        |   main.ts
+        |   styles.scss
+        |   
+        \---app
+            |   app.config.ts
+            |   app.html
+            |   app.routes.ts
+            |   app.scss
+            |   app.ts
+            |   
+            +---core
+            |   \---interceptors
+            |           http-error.interceptor.ts
+            |           
+            \---pages
+                \---home
+                        home.component.html
+                        home.component.scss
+                        home.component.ts
+                        
