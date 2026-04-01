@@ -1,8 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-
 import { ConfirmationDialogData } from '../../models/confirmation-dialog.model';
 
 @Component({
@@ -16,5 +15,6 @@ import { ConfirmationDialogData } from '../../models/confirmation-dialog.model';
   templateUrl: './confirmation-dialog.component.html',
 })
 export class ConfirmationDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData) {}
+  // Injeção moderna e tipada
+  public data = inject<ConfirmationDialogData>(MAT_DIALOG_DATA);
 }

@@ -1,84 +1,52 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { AuthStateService, UsuarioAuth } from './auth-state.service';
 import { ConfigService } from '../../services/config.service';
-import { AuthStateService } from './auth-state.service';
-
-export interface LoginRequest {
-  login: string;
-  senha: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  refreshToken: string;
-  usuario: string;
-  nome: string;
-  perfis: string[];
-}
-
-export interface RefreshTokenResponse {
-  accessToken: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  private authState = inject(AuthStateService);
+  private configService = inject(ConfigService);
 
-  private readonly BASE_API: string;
+  private readonly API = `${this.configService.getUrlService()}/auth`;
 
-  constructor(
-    private http: HttpClient,
-    private configService: ConfigService,
-    private authState: AuthStateService
-  ) {
-    this.BASE_API = `${this.configService.getUrlService()}/auth`;
+  /**
+   * ✅ USA O MÉTODO QUE VOCÊ JÁ CRIOU NO AUTH-STATE
+   */
+  hasPermission(permissionName: string): boolean {
+    const permissoes = this.authState.getPermissions();
+    return permissoes.includes(permissionName);
   }
 
-  // ✅ LOGIN
-  login(payload: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(
-      `${this.BASE_API}/login`,
-      payload
-    ).pipe(
-      tap(response => {
-        this.authState.setAuth(
-          response.token,
-          response.refreshToken,
-          {
-            usuario: response.usuario,
-            nome: response.nome,
-            perfis: response.perfis
-          }
-        );
-      })
+  login(credentials: any): Observable<any> {
+    return this.http.post<any>(`${this.API}/login`, credentials).pipe(
+      tap(res => this.atualizarEstadoAutenticacao(res))
     );
   }
 
-  // 🔄 REFRESH TOKEN (somente HTTP)
-  refreshToken(): Observable<RefreshTokenResponse> {
-    const refreshToken = localStorage.getItem('refreshToken');
-
-    return this.http.post<RefreshTokenResponse>(
-      `${this.BASE_API}/refresh-token`,
-      { refreshToken }
+  refreshToken(token?: string): Observable<any> {
+    const refresh = token || this.authState.getRefreshToken();
+    return this.http.post<any>(`${this.API}/refresh-token`, { refreshToken: refresh }).pipe(
+      tap(res => this.atualizarEstadoAutenticacao(res))
     );
   }
 
-  // ✅ LOGOUT
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    this.authState.clear();
+  validateSession(token: string): Observable<any> {
+    return this.http.post<any>(`${this.API}/validate-session`, { token });
   }
 
-  // ⚠️ Uso restrito (guards/interceptor)
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
-  }
+  private atualizarEstadoAutenticacao(res: any): void {
+    const usuario: UsuarioAuth = {
+      usuario: res.usuario,
+      nome: res.nome,
+      perfis: res.perfis || [],
+      permissoes: res.permissoes || []
+    };
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
+    this.authState.setAuth(res.token, res.refreshToken, usuario);
   }
 }

@@ -19,7 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     const token = this.authState.getToken();
 
     const authReq = token
@@ -41,12 +40,13 @@ export class AuthInterceptor implements HttpInterceptor {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
 
-      return this.authService.refreshToken().pipe(
-        switchMap(response => {
-          const newToken = response.accessToken;
+      // Pega o token atual para enviar no refresh
+      const currentRefreshToken = this.authState.getRefreshToken() || '';
 
-          // Atualiza token no estado
-          this.authState.setAuth(newToken, this.authState.getRefreshToken()!, this.authState.getUsuario()!);
+      return this.authService.refreshToken(currentRefreshToken).pipe(
+        switchMap((response: any) => { // Tipado como 'any' para evitar erro TS18046
+          const newToken = response.token || response.accessToken; // Aceita tanto 'token' quanto 'accessToken'
+
           this.refreshTokenSubject.next(newToken);
           this.isRefreshing = false;
 
@@ -72,6 +72,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private isAuthEndpoint(url: string): boolean {
-    return url.includes('/auth/login') || url.includes('/auth/refresh-token');
+    return url.includes('/auth/login') || url.includes('/auth/refresh') || url.includes('/auth/validate-session');
   }
 }
