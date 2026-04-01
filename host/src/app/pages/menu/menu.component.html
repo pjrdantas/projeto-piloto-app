@@ -17,10 +17,12 @@
     <span class="titulo-toolbar">Projeto Piloto</span>
   </div>
 
-  <div class="toolbar-right" *ngIf="authState.usuario$ | async as usuario">
+  @if (authState.usuario$ | async; as usuario) {
+  <div class="toolbar-right" >
     <mat-icon fontIcon="person"></mat-icon>
     <span class="usuario-logado-text">{{ usuario.nome }}</span>
   </div>
+}
 </mat-toolbar>
 
 <mat-divider></mat-divider>

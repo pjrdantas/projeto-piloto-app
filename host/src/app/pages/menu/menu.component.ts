@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject, NgZone } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule, NgIf, AsyncPipe } from '@angular/common'; // Importes específicos
+import { CommonModule, AsyncPipe } from '@angular/common'; // Importes específicos
 import { AuthStateService, UsuarioAuth } from '../../core/auth/auth-state.service';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -17,7 +17,6 @@ import { HasPermissionDirective } from '../../shared/directives/has-permission.d
   standalone: true,
   imports: [
     CommonModule,
-    NgIf,
     AsyncPipe, // Essencial para o pipe | async no HTML
     RouterModule,
     MatToolbarModule,
@@ -35,30 +34,26 @@ export class MenuComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   public authState = inject(AuthStateService);
   private cdr = inject(ChangeDetectorRef);
-  private zone = inject(NgZone); // Adicione nos injects lá em cima
+  private zone = inject(NgZone);
 
   usuario: UsuarioAuth | null = null;
   dataHoraFormatada = '';
-  private timer!: any;
+  private timerId: ReturnType<typeof window.setInterval> | null = null;
 
   ngOnInit(): void {
-    // Busca o usuário inicial
     this.usuario = this.authState.getUsuario();
 
-    // Escuta mudanças no usuário
-    this.authState.usuario$.subscribe(u => {
+    this.authState.usuario$.subscribe((u: UsuarioAuth | null) => {
       this.usuario = u;
       this.cdr.detectChanges();
     });
 
     this.atualizarDataHora();
 
-    // Executa o timer fora da "Zona" do Angular para não sobrecarregar o navegador
     this.zone.runOutsideAngular(() => {
-      this.timer = setInterval(() => {
+      this.timerId = window.setInterval(() => {
         this.atualizarDataHora();
 
-        // Somente esta linha volta para a Zona para atualizar o texto na tela
         this.zone.run(() => {
           this.cdr.detectChanges();
         });
@@ -66,24 +61,55 @@ export class MenuComponent implements OnInit, OnDestroy {
     });
   }
 
-
   ngOnDestroy(): void {
-    if (this.timer) clearInterval(this.timer);
+    if (this.timerId !== null) {
+      window.clearInterval(this.timerId);
+      this.timerId = null;
+    }
   }
 
-  private atualizarDataHora() {
+  private atualizarDataHora(): void {
     const agora = new Date();
     this.dataHoraFormatada =
-      agora.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
+      agora.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }) +
       ' - ' +
-      agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      agora.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
   }
 
-  irUsuarios() { this.router.navigate(['/app/usuarios']); }
-  irPerfis() { this.router.navigate(['/app/perfis']); }
-  irPermissoes() { this.router.navigate(['/app/permissoes']); }
-  irAplicativos() { this.router.navigate(['/app/aplicativos']); }
-  abrirMicrofrontend() { this.router.navigate(['/app/microfrontend']); }
-  irHome() { this.router.navigate(['/app/home']); }
-  sair() { this.authState.clear(); this.router.navigate(['/login']); }
+  irUsuarios(): void {
+    this.router.navigate(['/app/usuarios']);
+  }
+
+  irPerfis(): void {
+    this.router.navigate(['/app/perfis']);
+  }
+
+  irPermissoes(): void {
+    this.router.navigate(['/app/permissoes']);
+  }
+
+  irAplicativos(): void {
+    this.router.navigate(['/app/aplicativos']);
+  }
+
+  abrirMicrofrontend(): void {
+    this.router.navigate(['/app/microfrontend']);
+  }
+
+  irHome(): void {
+    this.router.navigate(['/app/home']);
+  }
+
+  sair(): void {
+    this.authState.clear();
+    this.router.navigate(['/login']);
+  }
 }
