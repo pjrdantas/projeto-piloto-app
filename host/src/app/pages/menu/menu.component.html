@@ -50,10 +50,16 @@
     <span class="item-menu">Cadastro Aplicativos</span>
   </button>
 
-  <button mat-menu-item (click)="abrirMicrofrontend()">
-    <mat-icon fontIcon="apps"></mat-icon>
-    <span class="item-menu">Score de Empresas</span>
-  </button>
+  @if (aplicativosAtivos.length > 0) {
+    <mat-divider></mat-divider>
+    @for (app of aplicativosAtivos; track app.id) {
+      <button mat-menu-item (click)="navegarApp(app)" [matTooltip]="app.descricao">
+        <mat-icon>{{ getIconeApp(app) }}</mat-icon>
+        <span class="item-menu">{{ app.nome }}</span>
+      </button>
+    }
+    <mat-divider></mat-divider>
+  }
 
   <button mat-menu-item (click)="irHome()">
     <mat-icon fontIcon="home"></mat-icon>

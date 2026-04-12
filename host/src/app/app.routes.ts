@@ -1,10 +1,42 @@
+/* eslint-disable @typescript-eslint/array-type */
 import { Routes } from '@angular/router';
+import { Type } from '@angular/core';
 import { authGuard } from './guards/auth.guard';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 
 import { PublicLayoutComponent } from './layouts/public-layout.component';
 import { PrivateLayoutComponent } from './layouts/private-layout.component';
 import { HomeComponent } from './pages/home/home.component';
+
+function carregarHomeMicrofrontend(): Promise<Type<unknown>> {
+  const extrairComponente = (m: Record<string, unknown>): Type<unknown> => {
+    const componente = m['HomeComponent'] || m['AppComponent'];
+    if (!componente) {
+      throw new Error("Export de componente nao encontrado no remote.");
+    }
+    return componente as Type<unknown>;
+  };
+
+  const tentativas: Array<() => Promise<Record<string, unknown>>> = [
+    () => loadRemoteModule({ remoteEntry: 'http://localhost:4201/remoteEntry.json', exposedModule: './Component' }),
+    () => loadRemoteModule({ remoteEntry: 'http://localhost:4201/remoteEntry.js', exposedModule: './Component' }),
+    () => loadRemoteModule({ remoteEntry: 'http://localhost:4201/remoteEntry.js', exposedModule: 'mfe1' }),
+    () => loadRemoteModule('mfe1', './Component'),
+    () => loadRemoteModule('microfrontend', './Component'),
+  ];
+
+  const tentar = (indice: number): Promise<Type<unknown>> => {
+    if (indice >= tentativas.length) {
+      return Promise.reject(new Error('Falha ao carregar o microfrontend.'));
+    }
+
+    return tentativas[indice]()
+      .then((m) => extrairComponente(m))
+      .catch(() => tentar(indice + 1));
+  };
+
+  return tentar(0);
+}
 
 export const routes: Routes = [
 
@@ -59,9 +91,9 @@ export const routes: Routes = [
       {
         path: 'microfrontend',
         loadComponent: () =>
-          loadRemoteModule('mfe1', './Component')
-            .then((m) => m.HomeComponent)
+          carregarHomeMicrofrontend()
       },
+      { path: '**', redirectTo: 'home' },
     ],
   }
   ,

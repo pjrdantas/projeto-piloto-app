@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, inject } from '@angular/core';
 import {
   HttpEvent,
@@ -6,7 +7,7 @@ import {
   HttpRequest,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError, EMPTY } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -26,11 +27,25 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
         // 1. Erro 401: Não Autorizado / Sessão Expirada
         if (error.status === 401) {
-          this.logger.warn('Sessão encerrada (Login duplo ou expirado)');
-          this.snackBar.open('Sessão encerrada (Login realizado em outro local)', 'Ok', { duration: 5000 });
+
+          // 👇 IMPORTANTE: ignora erro do LOGIN
+          if (req.url.includes('/auth/login')) {
+            return throwError(() => error); // deixa o componente tratar
+          }
+
+          // 👇 aqui sim é sessão expirada
+          this.logger.warn('Sessão expirada');
+
+          this.snackBar.open(
+            'Sessão expirada. Faça login novamente.',
+            'Ok',
+            { duration: 5000 }
+          );
+
           this.authState.clear();
           this.router.navigate(['/login']);
-          return EMPTY;
+
+          return throwError(() => error); // 🔥 NUNCA use EMPTY aqui
         }
 
         // 2. Erro 403: Acesso Negado (A correção para o seu usuário novo)

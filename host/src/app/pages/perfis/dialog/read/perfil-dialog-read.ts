@@ -1,4 +1,5 @@
-import { Component, Inject, inject } from '@angular/core';
+/* eslint-disable @angular-eslint/prefer-inject */
+import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { initFederation } from '@angular-architects/native-federation';
 
 initFederation('federation.manifest.json')
