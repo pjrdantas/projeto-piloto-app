@@ -41,24 +41,34 @@ table {
 
 .btn-visibility {
   color: #757575 !important;
-  &:hover { color: #424242 !important; }
+  &:hover {
+    color: #424242 !important;
+  }
 }
 
 /* --- Estilização Global da Tabela --- */
-::ng-deep .mat-mdc-row:nth-child(even) { background-color: #f0f2f5; }
-::ng-deep .mat-mdc-row:nth-child(odd) { background-color: #ffffff; }
-::ng-deep .mat-mdc-row:hover { background-color: #e0e0e0; }
+::ng-deep .mat-mdc-row:nth-child(even) {
+  background-color: #f0f2f5;
+}
+::ng-deep .mat-mdc-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+::ng-deep .mat-mdc-row:hover {
+  background-color: #e0e0e0;
+}
 
 ::ng-deep .mat-mdc-header-cell {
   background-color: #667eea !important;
   color: white;
 }
 
-::ng-deep .mat-mdc-row, ::ng-deep .mat-mdc-header-row {
+::ng-deep .mat-mdc-row,
+::ng-deep .mat-mdc-header-row {
   height: 36px !important;
 }
 
-::ng-deep .mat-mdc-cell, ::ng-deep .mat-mdc-header-cell {
+::ng-deep .mat-mdc-cell,
+::ng-deep .mat-mdc-header-cell {
   padding: 0 8px !important;
   font-size: 13px;
   white-space: nowrap;
@@ -67,23 +77,41 @@ table {
 }
 
 /* --- Ajustes de Colunas --- */
-::ng-deep .mat-column-id { width: 50px !important; }
-::ng-deep .mat-column-nome { width: 150px !important; }
-::ng-deep .mat-column-url { width: 300px !important; }
-::ng-deep .mat-column-ativo { width: 70px !important; text-align: center; }
-::ng-deep .mat-column-criadoEm, ::ng-deep .mat-column-atualizadoEm { width: 110px !important; }
+::ng-deep .mat-column-id {
+  width: 50px !important;
+}
+::ng-deep .mat-column-nome {
+  width: 150px !important;
+}
+::ng-deep .mat-column-url {
+  width: 300px !important;
+}
+::ng-deep .mat-column-ativo {
+  width: 70px !important;
+  text-align: center;
+}
+::ng-deep .mat-column-criadoEm,
+::ng-deep .mat-column-atualizadoEm {
+  width: 110px !important;
+}
 
 ::ng-deep .mat-column-actions {
   width: 130px !important;
   text-align: center !important;
 
-  .mat-mdc-button-touch-target { display: none !important; }
+  .mat-mdc-button-touch-target {
+    display: none !important;
+  }
 
   button {
     width: 32px !important;
     height: 32px !important;
     line-height: 32px !important;
-    .mat-icon { font-size: 18px !important; width: 18px !important; height: 18px !important; }
+    .mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+    }
   }
 }
 
@@ -98,8 +126,12 @@ table {
   --mdc-snackbar-supporting-text-color: white !important;
 }
 
-.verde { color: green; }
-.vermelho { color: red; }
+.verde {
+  color: green;
+}
+.vermelho {
+  color: red;
+}
 
 .no-permission-container {
   text-align: center;
